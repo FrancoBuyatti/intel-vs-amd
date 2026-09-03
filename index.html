@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>¿Qué procesador elegirías? | Intel vs AMD</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="bg-tension" aria-hidden="true">
+    <div class="tension-line"></div>
+  </div>
+
+  <div class="progress-bar" id="progressBar" aria-hidden="true">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+
+  <!-- Indicador de conexión Firebase (esquina superior derecha) -->
+  <div class="firebase-status" id="firebaseStatus" title="Estado de conexión">
+    <span class="firebase-status__dot" id="firebaseDot"></span>
+    <span class="firebase-status__label" id="firebaseLabel">Conectando…</span>
+  </div>
+
+  <main id="app">
+
+    <!-- ============================================ -->
+    <!-- PANTALLA 1: BIENVENIDA                        -->
+    <!-- ============================================ -->
+    <section class="screen screen--active" id="screen-welcome" data-screen="welcome">
+      <div class="welcome-wrap">
+
+        <div class="welcome-vs" aria-hidden="true">
+          <span class="brand-tag brand-tag--intel">INTEL</span>
+          <span class="vs-symbol">VS</span>
+          <span class="brand-tag brand-tag--amd">AMD</span>
+        </div>
+
+        <h1 class="welcome-title">
+          ¿Qué procesador<br><span class="title-accent">elegirías?</span>
+        </h1>
+
+        <p class="welcome-subtitle">
+          Vas a recorrer <strong>5 escenarios reales</strong> de uso: gaming competitivo, programación,
+          edición de video, oficina y diseño 3D. En cada uno vas a elegir entre un procesador
+          <span class="hl-intel">Intel</span> y uno <span class="hl-amd">AMD</span>.
+          Tus votos se suman al resultado global de toda la clase.
+        </p>
+
+        <div class="welcome-meta">
+          <div class="meta-chip">
+            <span class="meta-num">05</span>
+            <span class="meta-label">Casos prácticos</span>
+          </div>
+          <div class="meta-chip">
+            <span class="meta-num" id="metaParticipants">—</span>
+            <span class="meta-label">Participantes</span>
+          </div>
+          <div class="meta-chip">
+            <span class="meta-num">🔴</span>
+            <span class="meta-label">Votos en vivo</span>
+          </div>
+        </div>
+
+        <button class="btn btn--start" id="btnStart">
+          <span>Comenzar la actividad</span>
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M5 12h14M13 5l7 7-7 7"/>
+          </svg>
+        </button>
+
+        <div class="welcome-links">
+          <button class="btn-link" id="btnGlobalResults">📊 Ver resultados globales de la clase →</button>
+          <button class="btn-link" id="btnHowItWorks">¿Cómo trabaja un microprocesador? →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- PANTALLA 2: CASO PRÁCTICO                     -->
+    <!-- ============================================ -->
+    <section class="screen" id="screen-case" data-screen="case">
+      <div class="case-wrap">
+
+        <div class="case-header">
+          <span class="case-counter" id="caseCounter">CASO 1 / 5</span>
+          <h2 class="case-title" id="caseTitle">Jugador competitivo</h2>
+          <p class="case-desc" id="caseDesc">Descripción del escenario.</p>
+        </div>
+
+        <div class="duel" id="duelContainer">
+          <button class="cpu-card cpu-card--intel" id="cardIntel" data-brand="intel">
+            <div class="cpu-card__glow"></div>
+            <span class="cpu-card__logo">INTEL</span>
+            <div class="cpu-card__icon" id="iconIntel">🔷</div>
+            <h3 class="cpu-card__name" id="nameIntel">Intel Core i5-14600K</h3>
+            <div class="cpu-card__quickspecs" id="quickIntel">
+              <span>14 núcleos</span><span>20 hilos</span><span>5.3 GHz</span>
+            </div>
+            <span class="cpu-card__cta">Elegir Intel</span>
+          </button>
+
+          <div class="duel-vs" aria-hidden="true"><span>VS</span></div>
+
+          <button class="cpu-card cpu-card--amd" id="cardAmd" data-brand="amd">
+            <div class="cpu-card__glow"></div>
+            <span class="cpu-card__logo">AMD</span>
+            <div class="cpu-card__icon" id="iconAmd">🔶</div>
+            <h3 class="cpu-card__name" id="nameAmd">AMD Ryzen 5 9600X</h3>
+            <div class="cpu-card__quickspecs" id="quickAmd">
+              <span>6 núcleos</span><span>12 hilos</span><span>5.4 GHz</span>
+            </div>
+            <span class="cpu-card__cta">Elegir AMD</span>
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- PANTALLA 3: EXPLICACIÓN EDUCATIVA POST-VOTO   -->
+    <!-- ============================================ -->
+    <section class="screen" id="screen-explain" data-screen="explain">
+      <div class="explain-wrap">
+
+        <div class="explain-result" id="explainResult">
+          <div class="explain-result__icon" id="explainIcon">🔷</div>
+          <div class="explain-result__check" aria-hidden="true">✓</div>
+        </div>
+
+        <h2 class="explain-name" id="explainName">Intel Core i5-14600K</h2>
+        <p class="explain-why" id="explainWhy">Por qué puede ser una buena elección para este caso.</p>
+
+        <div class="spec-grid" id="specGrid">
+          <div class="spec-box">
+            <span class="spec-box__label">Núcleos</span>
+            <span class="spec-box__value" id="specCores">14</span>
+          </div>
+          <div class="spec-box">
+            <span class="spec-box__label">Hilos</span>
+            <span class="spec-box__value" id="specThreads">20</span>
+          </div>
+          <div class="spec-box">
+            <span class="spec-box__label">Frecuencia máx.</span>
+            <span class="spec-box__value" id="specFreq">5.3 GHz</span>
+          </div>
+          <div class="spec-box">
+            <span class="spec-box__label">Caché</span>
+            <span class="spec-box__value" id="specCache">24 MB</span>
+          </div>
+          <div class="spec-box">
+            <span class="spec-box__label">TDP</span>
+            <span class="spec-box__value" id="specTdp">125 W</span>
+          </div>
+          <div class="spec-box">
+            <span class="spec-box__label">Socket</span>
+            <span class="spec-box__value" id="specSocket">LGA1700</span>
+          </div>
+        </div>
+
+        <details class="edu-accordion" open>
+          <summary>📘 Conceptos de Sistemas de Computación aplicados a esta elección</summary>
+          <div class="edu-content" id="eduContent"></div>
+        </details>
+
+        <button class="btn btn--continue" id="btnContinue">
+          <span id="btnContinueLabel">Siguiente caso</span>
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M5 12h14M13 5l7 7-7 7"/>
+          </svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- PANTALLA 4: RESULTADO FINAL PERSONAL          -->
+    <!-- ============================================ -->
+    <section class="screen" id="screen-final" data-screen="final">
+      <div class="final-wrap">
+
+        <span class="final-eyebrow">TU RESULTADO</span>
+        <h2 class="final-title">Tu perfil de hardware</h2>
+
+        <div class="final-score">
+          <div class="final-score__side final-score__side--intel">
+            <span class="final-score__brand">INTEL</span>
+            <span class="final-score__num" id="scoreIntel">0</span>
+            <span class="final-score__of">de 5 elecciones</span>
+          </div>
+          <div class="final-score__bar" aria-hidden="true">
+            <div class="final-score__bar-intel" id="barIntel"></div>
+            <div class="final-score__bar-amd" id="barAmd"></div>
+          </div>
+          <div class="final-score__side final-score__side--amd">
+            <span class="final-score__brand">AMD</span>
+            <span class="final-score__num" id="scoreAmd">0</span>
+            <span class="final-score__of">de 5 elecciones</span>
+          </div>
+        </div>
+
+        <div class="profile-card" id="profileCard">
+          <span class="profile-card__label">SEGÚN TUS ELECCIONES</span>
+          <h3 class="profile-card__title" id="profileTitle">Priorizas el rendimiento en juegos</h3>
+          <p class="profile-card__desc" id="profileDesc">Descripción del perfil resultante.</p>
+        </div>
+
+        <div class="final-actions">
+          <button class="btn btn--global" id="btnSeeGlobal">
+            <span>📊 Ver resultados de toda la clase</span>
+          </button>
+          <button class="btn btn--continue" id="btnRestart">
+            <span>Repetir la actividad</span>
+          </button>
+          <button class="btn-link" id="btnHowItWorks2">¿Cómo trabaja un microprocesador? →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- PANTALLA 5: RESULTADOS GLOBALES DE LA CLASE   -->
+    <!-- ============================================ -->
+    <section class="screen" id="screen-global" data-screen="global">
+      <div class="global-wrap">
+
+        <button class="btn-back" id="btnBackFromGlobal">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M19 12H5M12 5l-7 7 7 7"/>
+          </svg>
+          Volver
+        </button>
+
+        <div class="global-header">
+          <span class="final-eyebrow">EN VIVO · TODA LA CLASE</span>
+          <h2 class="final-title">Resultados globales</h2>
+          <p class="global-subtitle">Los votos se actualizan en tiempo real a medida que los compañeros completan la actividad.</p>
+        </div>
+
+        <!-- Resumen total -->
+        <div class="global-summary">
+          <div class="global-summary__block global-summary__block--intel">
+            <span class="global-summary__brand">INTEL</span>
+            <span class="global-summary__num" id="globalIntelVotes">0</span>
+            <span class="global-summary__pct" id="globalIntelPct">0%</span>
+            <span class="global-summary__label">votos totales</span>
+          </div>
+
+          <div class="global-summary__center">
+            <div class="global-bar-wrap">
+              <div class="global-bar">
+                <div class="global-bar__intel" id="globalBarIntel"></div>
+                <div class="global-bar__amd" id="globalBarAmd"></div>
+              </div>
+            </div>
+            <span class="global-participants" id="globalParticipants">0 participantes</span>
+          </div>
+
+          <div class="global-summary__block global-summary__block--amd">
+            <span class="global-summary__brand">AMD</span>
+            <span class="global-summary__num" id="globalAmdVotes">0</span>
+            <span class="global-summary__pct" id="globalAmdPct">0%</span>
+            <span class="global-summary__label">votos totales</span>
+          </div>
+        </div>
+
+        <!-- Desglose por caso -->
+        <div class="global-cases" id="globalCases">
+          <!-- Se genera dinámicamente -->
+        </div>
+
+        <!-- Distribución de perfiles -->
+        <div class="global-profiles">
+          <h3 class="global-section-title">Distribución de perfiles</h3>
+          <div class="profile-bars" id="profileBars">
+            <div class="profile-bar-row">
+              <span class="profile-bar-row__label">🔵 Frecuencia / Intel</span>
+              <div class="profile-bar-row__bar"><div class="profile-bar-row__fill profile-bar-row__fill--intel" id="profileBarIntel"></div></div>
+              <span class="profile-bar-row__num" id="profileCountIntel">0</span>
+            </div>
+            <div class="profile-bar-row">
+              <span class="profile-bar-row__label">🔴 Productividad / AMD</span>
+              <div class="profile-bar-row__bar"><div class="profile-bar-row__fill profile-bar-row__fill--amd" id="profileBarAmd"></div></div>
+              <span class="profile-bar-row__num" id="profileCountAmd">0</span>
+            </div>
+            <div class="profile-bar-row">
+              <span class="profile-bar-row__label">⚖️ Equilibrado</span>
+              <div class="profile-bar-row__bar"><div class="profile-bar-row__fill profile-bar-row__fill--mixed" id="profileBarMixed"></div></div>
+              <span class="profile-bar-row__num" id="profileCountMixed">0</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- PANTALLA BONUS: CICLO FETCH-DECODE-EXECUTE    -->
+    <!-- ============================================ -->
+    <section class="screen" id="screen-cycle" data-screen="cycle">
+      <div class="cycle-wrap">
+
+        <button class="btn-back" id="btnBackFromCycle" aria-label="Volver">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M19 12H5M12 5l-7 7 7 7"/>
+          </svg>
+          Volver
+        </button>
+
+        <span class="final-eyebrow">BONUS · SISTEMAS DE COMPUTACIÓN I</span>
+        <h2 class="cycle-title">¿Cómo trabaja un microprocesador?</h2>
+        <p class="cycle-subtitle">
+          Cada instrucción de un programa, sin importar la marca del procesador, atraviesa el mismo
+          ciclo básico para ejecutarse. Tocá "Reproducir ciclo" y seguí el recorrido de una instrucción
+          paso a paso.
+        </p>
+
+        <div class="cycle-stage">
+          <svg class="cycle-diagram" id="cycleDiagram" viewBox="0 0 900 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagrama del ciclo Fetch, Decode, Execute, Write Back">
+            <defs>
+              <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                <path d="M0,0 L8,3 L0,6 Z" fill="var(--cycle-arrow)"/>
+              </marker>
+            </defs>
+            <path class="cycle-arrow" d="M 195 80 L 335 80" stroke="var(--cycle-arrow)" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+            <path class="cycle-arrow" d="M 565 80 L 705 80" stroke="var(--cycle-arrow)" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+            <path class="cycle-arrow" d="M 770 145 L 770 290 L 630 350" stroke="var(--cycle-arrow)" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+            <path class="cycle-arrow" d="M 410 350 L 270 350 L 130 290 L 130 145" stroke="var(--cycle-arrow)" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+            <g class="cycle-node" id="nodeFetch" data-step="0">
+              <rect x="40" y="35" width="155" height="90" rx="16"/>
+              <text x="117.5" y="68" class="cycle-node__step">01</text>
+              <text x="117.5" y="98" class="cycle-node__label">FETCH</text>
+            </g>
+            <g class="cycle-node" id="nodeDecode" data-step="1">
+              <rect x="335" y="35" width="230" height="90" rx="16"/>
+              <text x="450" y="68" class="cycle-node__step">02</text>
+              <text x="450" y="98" class="cycle-node__label">DECODE</text>
+            </g>
+            <g class="cycle-node" id="nodeExecute" data-step="2">
+              <rect x="705" y="35" width="155" height="90" rx="16"/>
+              <text x="782.5" y="68" class="cycle-node__step">03</text>
+              <text x="782.5" y="98" class="cycle-node__label">EXECUTE</text>
+            </g>
+            <g class="cycle-node" id="nodeWriteback" data-step="3">
+              <rect x="410" y="305" width="220" height="90" rx="16"/>
+              <text x="520" y="338" class="cycle-node__step">04</text>
+              <text x="520" y="368" class="cycle-node__label">WRITE BACK</text>
+            </g>
+            <text x="450" y="225" class="cycle-center-label" id="cycleCenterLabel" text-anchor="middle">Ciclo de instrucción</text>
+          </svg>
+
+          <div class="cycle-explanation" id="cycleExplanation">
+            <span class="cycle-explanation__step" id="cycleStepNum">PASO 1 / 4</span>
+            <h3 class="cycle-explanation__title" id="cycleStepTitle">FETCH — Obtención de la instrucción</h3>
+            <p class="cycle-explanation__text" id="cycleStepText">
+              La Unidad de Control busca en la memoria RAM la siguiente instrucción a ejecutar, usando
+              la dirección guardada en el Contador de Programa (PC), y la trae hasta el procesador.
+            </p>
+          </div>
+        </div>
+
+        <div class="cycle-controls">
+          <button class="btn btn--continue" id="btnPlayCycle">
+            <span id="btnPlayCycleLabel">▶ Reproducir ciclo</span>
+          </button>
+          <div class="cycle-dots" id="cycleDots">
+            <span class="cycle-dot cycle-dot--active" data-dot="0"></span>
+            <span class="cycle-dot" data-dot="1"></span>
+            <span class="cycle-dot" data-dot="2"></span>
+            <span class="cycle-dot" data-dot="3"></span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <div class="vote-flash" id="voteFlash" aria-hidden="true"></div>
+
+  <!-- Firebase SDK (CDN, sin instalación) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getDatabase, ref, runTransaction, onValue, increment }
+      from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+    // ──────────────────────────────────────────────
+    // 🔧 CONFIGURACIÓN FIREBASE
+    // Reemplazá estos valores con los de tu proyecto
+    // (Firebase Console → Configuración del proyecto → Tu app web)
+    // ──────────────────────────────────────────────
+    const firebaseConfig = {
+      apiKey:            "TU_API_KEY",
+      authDomain:        "TU_PROYECTO.firebaseapp.com",
+      databaseURL:       "https://TU_PROYECTO-default-rtdb.firebaseio.com",
+      projectId:         "TU_PROYECTO",
+      storageBucket:     "TU_PROYECTO.appspot.com",
+      messagingSenderId: "TU_SENDER_ID",
+      appId:             "TU_APP_ID"
+    };
+    // ──────────────────────────────────────────────
+
+    const app = initializeApp(firebaseConfig);
+    const db  = getDatabase(app);
+
+    // Exponemos funciones al scope global para que script.js pueda llamarlas
+    window.firebaseDB = db;
+    window.fbRef      = ref;
+    window.fbRunTransaction = runTransaction;
+    window.fbOnValue  = onValue;
+    window.fbIncrement = increment;
+
+    // Señalar que Firebase cargó correctamente
+    window.dispatchEvent(new Event('firebaseReady'));
+  </script>
+
+  <script src="data.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
