@@ -402,14 +402,21 @@
     const db  = getDatabase(app);
 
     // Exponemos funciones al scope global para que script.js pueda llamarlas
-    window.firebaseDB = db;
-    window.fbRef      = ref;
+    window.firebaseDB       = db;
+    window.fbRef            = ref;
     window.fbRunTransaction = runTransaction;
-    window.fbOnValue  = onValue;
-    window.fbIncrement = increment;
+    window.fbOnValue        = onValue;
+    window.fbIncrement      = increment;
 
-    // Señalar que Firebase cargó correctamente
-    window.dispatchEvent(new Event('firebaseReady'));
+    // En vez de disparar un evento (que script.js puede perderse si aún no cargó),
+    // llamamos directamente a la función que script.js registró en window.
+    // Si script.js ya cargó → la ejecuta ahora.
+    // Si todavía no cargó → script.js la ejecuta solo al arrancar (ve firebaseDB ya listo).
+    if (typeof window.onFirebaseReady === 'function') {
+      window.onFirebaseReady();
+    } else {
+      window._firebaseLoaded = true; // flag para que script.js lo detecte
+    }
   </script>
 
   <script src="data.js"></script>
