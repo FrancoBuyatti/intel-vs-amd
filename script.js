@@ -437,17 +437,27 @@ function init() {
 
   setCycleStep(0);
 
-  // Esperar a que Firebase esté listo
-  window.addEventListener('firebaseReady', () => {
+  // Función que activa Firebase en la app. Se llama de dos formas posibles:
+  // A) El módulo Firebase termina DESPUÉS de script.js → index.html llama window.onFirebaseReady()
+  // B) El módulo Firebase termina ANTES de script.js  → window._firebaseLoaded ya es true, la llamamos acá
+  function activateFirebase() {
     state.firebaseReady = true;
     setFirebaseStatus(true);
     listenGlobalResults();
-  });
+  }
 
-  // Si Firebase no carga en 4s, mostrar "sin conexión" (config no configurada aún)
+  if (window._firebaseLoaded) {
+    // Firebase ya terminó de cargar antes que nosotros → activar de una
+    activateFirebase();
+  } else {
+    // Firebase todavía no terminó → dejamos el callback para que lo llame él
+    window.onFirebaseReady = activateFirebase;
+  }
+
+  // Si en 6s Firebase sigue sin conectarse, mostrar "sin conexión"
   setTimeout(() => {
     if (!state.firebaseReady) setFirebaseStatus(false);
-  }, 4000);
+  }, 6000);
 }
 
 document.addEventListener('DOMContentLoaded', init);
