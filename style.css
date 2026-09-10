@@ -1436,3 +1436,56 @@ details summary:focus-visible {
     white-space: normal;
   }
 }
+
+/* ============================================================
+   ESTILOS v3: badge de época y secciones de era en resultados
+   ============================================================ */
+
+/* Badge de época que aparece sobre el título del caso */
+.era-badge {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  padding: 0.25em 0.75em;
+  border-radius: 999px;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-elevated);
+  color: var(--text-muted);
+  margin-bottom: 0.4rem;
+  align-self: center;
+}
+
+.era-badge--modern  { color: #4ade80; border-color: #166534; background: #052e1620; }
+.era-badge--mid     { color: #fbbf24; border-color: #92400e; background: #451a0320; }
+.era-badge--retro   { color: #f87171; border-color: #991b1b; background: #450a0a20; }
+
+/* Secciones de era en la pantalla de resultados globales */
+.era-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.era-section__title {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: 0.2rem;
+}
+
+/* Etiqueta de año dentro de cada fila del breakdown */
+.case-breakdown__era-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  padding: 0.15em 0.5em;
+}

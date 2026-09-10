@@ -136,33 +136,52 @@ function updateGlobalSummary(intel, amd) {
 
 function renderCaseBreakdown(data) {
   const container = document.getElementById('globalCases');
-  container.innerHTML = CASES.map(c => {
-    const cd    = data[c.id] || {};
-    const intel = cd.intel || 0;
-    const amd   = cd.amd   || 0;
-    const total = intel + amd || 1;
-    const iPct  = Math.round((intel / total) * 100);
-    const aPct  = 100 - iPct;
-    return `
-      <div class="case-breakdown">
-        <div class="case-breakdown__header">
-          <span class="case-breakdown__icon">${c.icon}</span>
-          <span class="case-breakdown__title">${c.title}</span>
-          <span class="case-breakdown__total">${intel + amd} votos</span>
-        </div>
-        <div class="case-breakdown__bar">
-          <div class="case-breakdown__bar-intel" style="width:${iPct}%">
-            ${iPct > 12 ? `<span>${iPct}%</span>` : ''}
+
+  // Agrupa los casos del banco completo (ALL_CASES) por era para mostrar secciones
+  const eras = [
+    { key: 'moderno',    label: '🟢 Modernos (2023-2024)' },
+    { key: 'intermedio', label: '🟡 Era intermedia (2015-2020)' },
+    { key: 'historico',  label: '🔴 Históricos (2010-2015)' },
+  ];
+
+  container.innerHTML = eras.map(era => {
+    const casosDeEra = ALL_CASES.filter(c => c.era === era.key);
+    // Solo mostrar eras que tengan al menos 1 voto
+    const tieneVotos = casosDeEra.some(c => (data[c.id]?.intel || 0) + (data[c.id]?.amd || 0) > 0);
+    if (!tieneVotos) return '';
+
+    const filas = casosDeEra.map(c => {
+      const cd    = data[c.id] || {};
+      const intel = cd.intel || 0;
+      const amd   = cd.amd   || 0;
+      const total = intel + amd;
+      if (total === 0) return ''; // ocultar casos sin votos aún
+      const iPct = Math.round((intel / total) * 100);
+      const aPct = 100 - iPct;
+      return `
+        <div class="case-breakdown">
+          <div class="case-breakdown__header">
+            <span class="case-breakdown__icon">${c.icon}</span>
+            <span class="case-breakdown__title">${c.title}</span>
+            <span class="case-breakdown__era-label">${c.eraLabel}</span>
+            <span class="case-breakdown__total">${total} votos</span>
           </div>
-          <div class="case-breakdown__bar-amd" style="width:${aPct}%">
-            ${aPct > 12 ? `<span>${aPct}%</span>` : ''}
+          <div class="case-breakdown__bar">
+            <div class="case-breakdown__bar-intel" style="width:${iPct}%">
+              ${iPct > 12 ? `<span>${iPct}%</span>` : ''}
+            </div>
+            <div class="case-breakdown__bar-amd" style="width:${aPct}%">
+              ${aPct > 12 ? `<span>${aPct}%</span>` : ''}
+            </div>
           </div>
-        </div>
-        <div class="case-breakdown__labels">
-          <span class="hl-intel">Intel ${intel}</span>
-          <span class="hl-amd">AMD ${amd}</span>
-        </div>
-      </div>`;
+          <div class="case-breakdown__labels">
+            <span class="hl-intel">Intel ${intel}</span>
+            <span class="hl-amd">AMD ${amd}</span>
+          </div>
+        </div>`;
+    }).join('');
+
+    return `<div class="era-section"><h3 class="era-section__title">${era.label}</h3>${filas}</div>`;
   }).join('');
 }
 
@@ -191,6 +210,18 @@ function renderCase(index) {
   document.getElementById('caseCounter').textContent = `CASO ${index + 1} / ${CASES.length}`;
   document.getElementById('caseTitle').textContent   = `${c.icon}  ${c.title}`;
   document.getElementById('caseDesc').textContent    = c.desc;
+
+  // Badge de época — se crea si no existe, se actualiza en cada caso
+  let eraBadge = document.getElementById('eraBadge');
+  if (!eraBadge) {
+    eraBadge = document.createElement('span');
+    eraBadge.id = 'eraBadge';
+    document.getElementById('caseCounter').insertAdjacentElement('afterend', eraBadge);
+  }
+  const eraColors = { moderno: 'era-badge--modern', intermedio: 'era-badge--mid', historico: 'era-badge--retro' };
+  const eraLabels = { moderno: '🟢 Moderno', intermedio: '🟡 Intermedio', historico: '🔴 Histórico' };
+  eraBadge.className = `era-badge ${eraColors[c.era] || ''}`;
+  eraBadge.textContent = `${eraLabels[c.era] || c.era} · ${c.eraLabel}`;
 
   document.getElementById('iconIntel').textContent = intelCpu.icon;
   document.getElementById('nameIntel').textContent = intelCpu.name;
